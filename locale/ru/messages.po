@@ -1,0 +1,219 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2018-04-16 15:27+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=koi8-r\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: /home/eddy/Docs/SAO/Cameras/Atik/MY_/cmdlnopts.c:63
+msgid "show this help"
+msgstr ""
+
+#: /home/eddy/Docs/SAO/Cameras/Atik/MY_/cmdlnopts.c:64
+msgid "rewrite output file if exists"
+msgstr ""
+
+#: /home/eddy/Docs/SAO/Cameras/Atik/MY_/cmdlnopts.c:65
+msgid "verbose level (each -v increase it)"
+msgstr ""
+
+#: /home/eddy/Docs/SAO/Cameras/Atik/MY_/cmdlnopts.c:66
+msgid "camera device name"
+msgstr ""
+
+#: /home/eddy/Docs/SAO/Cameras/Atik/MY_/cmdlnopts.c:67
+msgid "not open shutter, when exposing (\"dark frames\")"
+msgstr ""
+
+#: /home/eddy/Docs/SAO/Cameras/Atik/MY_/cmdlnopts.c:68
+msgid "open shutter"
+msgstr ""
+
+#: /home/eddy/Docs/SAO/Cameras/Atik/MY_/cmdlnopts.c:69
+msgid "close shutter"
+msgstr ""
+
+#: /home/eddy/Docs/SAO/Cameras/Atik/MY_/cmdlnopts.c:70
+msgid "program author"
+msgstr ""
+
+#: /home/eddy/Docs/SAO/Cameras/Atik/MY_/cmdlnopts.c:71
+msgid "object type (neon, object, flat etc)"
+msgstr ""
+
+#: /home/eddy/Docs/SAO/Cameras/Atik/MY_/cmdlnopts.c:72
+msgid "instrument name"
+msgstr ""
+
+#: /home/eddy/Docs/SAO/Cameras/Atik/MY_/cmdlnopts.c:73
+msgid "object name"
+msgstr ""
+
+#: /home/eddy/Docs/SAO/Cameras/Atik/MY_/cmdlnopts.c:74
+msgid "observers' names"
+msgstr ""
+
+#: /home/eddy/Docs/SAO/Cameras/Atik/MY_/cmdlnopts.c:75
+msgid "observing program name"
+msgstr ""
+
+#: /home/eddy/Docs/SAO/Cameras/Atik/MY_/cmdlnopts.c:76
+msgid "N flushes before exposing"
+msgstr ""
+
+#: /home/eddy/Docs/SAO/Cameras/Atik/MY_/cmdlnopts.c:77
+msgid "horizontal binning to N pixels"
+msgstr ""
+
+#: /home/eddy/Docs/SAO/Cameras/Atik/MY_/cmdlnopts.c:78
+msgid "vertical binning to N pixels"
+msgstr ""
+
+#: /home/eddy/Docs/SAO/Cameras/Atik/MY_/cmdlnopts.c:79
+msgid "make series of N frames"
+msgstr ""
+
+#: /home/eddy/Docs/SAO/Cameras/Atik/MY_/cmdlnopts.c:80
+msgid "make pause for N seconds between expositions"
+msgstr ""
+
+#: /home/eddy/Docs/SAO/Cameras/Atik/MY_/cmdlnopts.c:81
+msgid "set exposure time to given value (ms)"
+msgstr ""
+
+#: /home/eddy/Docs/SAO/Cameras/Atik/MY_/cmdlnopts.c:82
+msgid "frame X0 coordinate (-1 - all with overscan)"
+msgstr ""
+
+#: /home/eddy/Docs/SAO/Cameras/Atik/MY_/cmdlnopts.c:83
+msgid "frame Y0 coordinate (-1 - all with overscan)"
+msgstr ""
+
+#: /home/eddy/Docs/SAO/Cameras/Atik/MY_/cmdlnopts.c:84
+msgid "frame X1 coordinate (-1 - all with overscan)"
+msgstr ""
+
+#: /home/eddy/Docs/SAO/Cameras/Atik/MY_/cmdlnopts.c:85
+msgid "frame Y1 coordinate (-1 - all with overscan)"
+msgstr ""
+
+#: /home/eddy/Docs/SAO/Cameras/Atik/MY_/cmdlnopts.c:86
+msgid "set CCD temperature to given value (degr C)"
+msgstr ""
+
+#: /home/eddy/Docs/SAO/Cameras/Atik/MY_/main.c:105
+msgid "No CCD found"
+msgstr ""
+
+#: /home/eddy/Docs/SAO/Cameras/Atik/MY_/main.c:109
+#, c-format
+msgid "Camera \"%s\" not found"
+msgstr ""
+
+#: /home/eddy/Docs/SAO/Cameras/Atik/MY_/main.c:112
+#, c-format
+msgid "Found %d cameras, give a specific name with \"--camname\" option"
+msgstr ""
+
+#: /home/eddy/Docs/SAO/Cameras/Atik/MY_/main.c:118
+#: /home/eddy/Docs/SAO/Cameras/Atik/MY_/main.c:146
+msgid "Can't open camera device"
+msgstr ""
+
+#: /home/eddy/Docs/SAO/Cameras/Atik/MY_/main.c:153
+msgid "Colour camera!"
+msgstr ""
+
+#. Статистика по изображению:\n
+#: /home/eddy/Docs/SAO/Cameras/Atik/MY_/main.c:506
+#, c-format
+msgid "Image stat:\n"
+msgstr ""
+
+#. amount of pcount and/or scount wrong
+#. / "Неправильный формат строки помощи"
+#: /home/eddy/Docs/SAO/Cameras/Atik/MY_/parseargs.c:56
+msgid "Wrong helpstring!"
+msgstr ""
+
+#. / "Целое вне допустимого диапазона"
+#: /home/eddy/Docs/SAO/Cameras/Atik/MY_/parseargs.c:86
+msgid "Integer out of range"
+msgstr ""
+
+#. / "Неправильный параметр: %s"
+#: /home/eddy/Docs/SAO/Cameras/Atik/MY_/parseargs.c:480
+#, c-format
+msgid "Wrong parameter: %s"
+msgstr ""
+
+#. / "%s: необходим аргумент!"
+#: /home/eddy/Docs/SAO/Cameras/Atik/MY_/parseargs.c:485
+#, c-format
+msgid "%s: argument needed!"
+msgstr ""
+
+#. / "Неправильный аргумент \"%s\" параметра \"%s\""
+#: /home/eddy/Docs/SAO/Cameras/Atik/MY_/parseargs.c:490
+#, c-format
+msgid "Wrong argument \"%s\" of parameter \"%s\""
+msgstr ""
+
+#: /home/eddy/Docs/SAO/Cameras/Atik/MY_/usefull_macros.c:173
+msgid "No filename given!"
+msgstr ""
+
+#. / "Не могу открыть %s для чтения"
+#: /home/eddy/Docs/SAO/Cameras/Atik/MY_/usefull_macros.c:178
+#, c-format
+msgid "Can't open %s for reading"
+msgstr ""
+
+#. / "Не могу выполнить stat %s"
+#: /home/eddy/Docs/SAO/Cameras/Atik/MY_/usefull_macros.c:183
+#, c-format
+msgid "Can't stat %s"
+msgstr ""
+
+#. / "Ошибка mmap"
+#: /home/eddy/Docs/SAO/Cameras/Atik/MY_/usefull_macros.c:190
+msgid "Mmap error for input"
+msgstr ""
+
+#. / "Не могу закрыть mmap'нутый файл"
+#: /home/eddy/Docs/SAO/Cameras/Atik/MY_/usefull_macros.c:195
+msgid "Can't close mmap'ed file"
+msgstr ""
+
+#. / "Не могу munmap"
+#: /home/eddy/Docs/SAO/Cameras/Atik/MY_/usefull_macros.c:205
+msgid "Can't munmap"
+msgstr ""
+
+#. / "Не могу настроить консоль"
+#: /home/eddy/Docs/SAO/Cameras/Atik/MY_/usefull_macros.c:231
+msgid "Can't setup console"
+msgstr ""
+
+#. Get settings
+#. / "Не могу получить настройки"
+#: /home/eddy/Docs/SAO/Cameras/Atik/MY_/usefull_macros.c:301
+msgid "Can't get settings"
+msgstr ""
+
+#. / "Не могу установить настройки"
+#: /home/eddy/Docs/SAO/Cameras/Atik/MY_/usefull_macros.c:312
+msgid "Can't set settings"
+msgstr ""
