@@ -25,6 +25,12 @@
 
 #include "parseargs.h"
 
+typedef enum{
+    SHUTTER_LEAVE,
+    SHUTTER_OPEN,
+    SHUTTER_CLOSE
+} shuttercmd;
+
 /*
  * here are some typedef's for global data
  */
@@ -37,19 +43,18 @@ typedef struct{
     char *prog_id;      // programm identificator
     char *author;       // programm author
     char *camname;      // camera name (if several connected)
+    int warmup;         // warm up CCD
     int dark;           // dark frame
-    int exptime;        // time of exposition in ms
+    double exptime;     // time of exposition in ms
     int nframes;        // amount of frames to take
     int hbin; int vbin; // binning
     int X0; int Y0;     // top left corner coordinate (-1 - all, including overscan)
     int X1; int Y1;     // bottom right corner coordinate
-    int nflushes;       // amount of flushes
     int pause_len;      // pause (in seconds) between expositions
     int shtr_cmd;       // shutter command
     int fast;           // 8bit mode
     double temperature; // temperature of CCD
 } glob_pars;
-
 
 // default & global parameters
 extern glob_pars const Gdefault;

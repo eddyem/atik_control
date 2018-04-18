@@ -52,7 +52,6 @@ glob_pars *G = NULL; // default parameters see in cmdlnopts.c
 
 uint16_t max = 0, min = 65535; // max/min values for given image
 double avr, std; // stat values
-char *camera = NULL, viewfield[80];
 double pixX, pixY; // pixel size in um
 
 void print_stat(u_int16_t *img, long size);
@@ -62,7 +61,7 @@ size_t curtime(char *s_time){ // current date/time
     return strftime(s_time, TMBUFSIZ, "%d/%m/%Y,%H:%M:%S", localtime(&tm));
 }
 
-double t_ext, t_int;    // external & CCD temperatures @exp. end
+double t_int;    // external & CCD temperatures @exp. end
 time_t expStartsAt;     // exposition start time (time_t)
 
 int check_filename(char *buff, char *outfile, char *ext){
@@ -78,6 +77,8 @@ int check_filename(char *buff, char *outfile, char *ext){
 }
 
 void signals(int signo){
+    atik_camera_abortExposure();
+    atik_camera_close();
     exit(signo);
 }
 
@@ -94,8 +95,7 @@ void info(const char *fmt, ...){
 
 int main(int argc, char **argv){
     int num;
-//    long ltmp;
-//    char buff[BUFF_SIZ];
+    char *msg = NULL;
     initial_setup();
     G = parse_args(argc, argv);
     /*
@@ -114,11 +114,13 @@ int main(int argc, char **argv){
     uint16_t *img = NULL;
     COOLING_STATE state = COOLING_ON;
     float targetTemp, power;
+    DBG("Try to open %s", atik_camera_name());
     if(atik_camera_open() == 0)
         ERRX(_("Can't open camera device"));
-    if(atik_camera_setPreviewMode(0) == 0) WARNX("failed");
+//    if(atik_camera_setPreviewMode(0) == 0) WARNX("failed");
+//    atik_camera_setDarkFrameMode(0);
+//    atik_camera_set8BitMode(0);
     if(atik_camera_getCoolingStatus(&state, &targetTemp, &power)){
-        char *msg = NULL;
         switch (state){
             case COOLING_INACTIVE:
                 msg = "inactive";
@@ -140,157 +142,156 @@ int main(int argc, char **argv){
     if(atik_camera_getTemperatureSensorStatus(1, &targetTemp)){
         info("CCD temperature: %.1f", targetTemp);
     }
-    DBG("Try to open %s", atik_camera_name());
-    if(atik_camera_open() == 0)
-        ERRX(_("Can't open camera device"));
     info("Binlist: %s", atik_camera_getBinList());
     AtikCapabilities *cap = atik_camera_getCapabilities();
     info("Sensor size: %dx%d pix", cap->pixelCountX, cap->pixelCountY);
-    info("Pixel size: %gx%g mkm", cap->pixelSizeX, cap->pixelSizeY);
+    if(G->X1 > (int)cap->pixelCountX || G->X1 < 1) G->X1 = cap->pixelCountX;
+    if(G->Y1 > (int)cap->pixelCountY || G->Y1 < 1) G->Y1 = cap->pixelCountY;
+    pixX = cap->pixelSizeX, pixY = cap->pixelSizeY;
+    info("Pixel size: %gx%g mkm", pixX, pixY);
     info("Max binning: %dx%d", cap->maxBinX, cap->maxBinY);
+    if(G->hbin > (int)cap->maxBinX || G->hbin < 1 ||
+        G->vbin > (int)cap->maxBinY || G->vbin < 1){
+            /// Биннинг должен иметь значение от 1 до %d(H) и %d(V)
+            ERRX(_("Binning should have values from 1 to %d(H) и %d(V)"),
+                cap->maxBinX, cap->maxBinY);
+        }
     info("Short expositions: min=%gs, max=%gs", cap->minShortExposure, cap->maxShortExposure);
     if(cap->colour != COLOUR_NONE) WARNX(_("Colour camera!"));
-    ;
-    /*
-    long x0,x1, y0,y1, row, img_rows, row_width;
-    int j;
-    // Камера '%s' из домена %s
-    info(_("Camera '%s', domain %s"), cam[i].name, cam[i].dname);
-    TRYFUNC(FLIOpen, &dev, cam[i].name, cam[i].domain);
-    if(fli_err) continue;
-    TRYFUNC(FLIGetModel, dev, buff, BUFF_SIZ);
-    // Модель:\t\t%s
-    if(!fli_err) info(_("Model:\t\t%s"), buff);
-    camera = strdup(buff);
-    TRYFUNC(FLIGetHWRevision, dev, &ltmp);
-    // Апп. версия: %ld
-    if(!fli_err) info(_("HW revision: %ld"), ltmp);
-    TRYFUNC(FLIGetFWRevision, dev, &ltmp);
-    // Прогр. версия: %ld
-    if(!fli_err) info(_("SW revision: %ld"), ltmp);
-    TRYFUNC(FLIGetPixelSize, dev, &pixX, &pixY);
-    // Размер пикселя: %g x %g
-    if(!fli_err) info(_("Pixel size: %g x %g"), pixX, pixY);
-    TRYFUNC(FLIGetVisibleArea, dev, &x0, &y0, &x1, &y1);
-    snprintf(viewfield, 80, "(%ld, %ld)(%ld, %ld)", x0, y0, x1, y1);
-    // Видимое поле: %s
-    if(!fli_err) info(_("Field of view: %s"), viewfield);
-    if(G->X1 > x1) G->X1 = x1;
-    if(G->Y1 > y1) G->Y1 = y1;
-    TRYFUNC(FLIGetArrayArea, dev, &x0, &y0, &x1, &y1);
-    // Поле изображения: (%ld, %ld)(%ld, %ld)
-    if(!fli_err) info(_("Array field: (%ld, %ld)(%ld, %ld)"), x0, y0, x1, y1);
-    TRYFUNC(FLISetHBin, dev, G->hbin);
-    TRYFUNC(FLISetVBin, dev, G->vbin);
-    if(G->X0 == -1) G->X0 = x0; // default values
-    if(G->Y0 == -1) G->Y0 = y0;
-    if(G->X1 == -1) G->X1 = x1;
-    if(G->Y1 == -1) G->Y1 = y1;
-    row_width = (G->X1 - G->X0) / G->hbin;
-    img_rows = (G->Y1 - G->Y0) / G->vbin;
-    TRYFUNC(FLISetImageArea, dev, G->X0, G->Y0,
-        G->X0 + (G->X1 - G->X0) / G->hbin, G->Y0 + (G->Y1 - G->Y0) / G->vbin);
-    TRYFUNC(FLISetNFlushes, dev, G->nflushes);
-    if(G->temperature < 40.){
+    CAMERA_TYPE camtype = atik_camera_getType();
+    switch (camtype){
+        case ORIGINAL_HSC:
+            msg = "ORIGINAL_HSC";
+        break;
+        case IC24:
+            msg = "IC24";
+        break;
+        case QUICKER:
+            msg = "QUICKER";
+        break;
+        case IIDC:
+            msg = "IIDC";
+        break;
+        case SONY_SCI:
+            msg = "SONY_SCI";
+        break;
+        default:
+            msg = "unknown";
+    }
+    info("Camera type: %s", msg);
+
+    if((G->X1 > -1 && G->X1 < G->X0) || (G->Y1 > -1 && G->Y1 < G->Y0)){
+        /// X1 и Y1 должны быть больше X0 и Y0
+        ERRX(_("X1 and Y1 should be greater than X0 and Y0"));
+    }
+    if(G->X0 < 0) G->X0 = 0;
+    if(G->Y0 < 0) G->Y0 = 0;
+
+    if(G->temperature < 25.){
         // "Установка температуры ПЗС: %g градусов Цельсия\n"
         green(_("Set CCD temperature to %g degr.C\n"), G->temperature);
-        TRYFUNC(FLISetTemperature, dev, G->temperature);
-    }
-    TRYFUNC(FLIGetTemperature, dev, &t_int);
-    if(!fli_err) green("CCDTEMP=%.1f\n", t_int);
-    TRYFUNC(FLIReadTemperature, dev, FLI_TEMPERATURE_EXTERNAL, &t_ext);
-    if(!fli_err) green("EXTTEMP=%.1f\n", t_ext);
-    if(G->shtr_cmd > -1){
-        flishutter_t shtr = G->shtr_cmd;
-        char *str = NULL;
-        switch(shtr){
-            case FLI_SHUTTER_CLOSE:
-                str = "close";
-            break;
-            case FLI_SHUTTER_OPEN:
-                str = "open";
-            break;
-            case FLI_SHUTTER_EXTERNAL_EXPOSURE_CONTROL|FLI_SHUTTER_EXTERNAL_TRIGGER_LOW:
-                str = "open @ LOW";
-            break;
-            case FLI_SHUTTER_EXTERNAL_EXPOSURE_CONTROL|FLI_SHUTTER_EXTERNAL_TRIGGER_HIGH:
-                str = "open @ HIGH";
-            break;
-            default:
-                str = "WTF?";
+        if(!atik_camera_setCooling(G->temperature)){
+            /// "Ошибка во время установки температуры ПЗС %g"
+            WARNX(_("Error when trying to set cooling temperature %g"), G->temperature);
         }
-        green(_("%s CCD shutter\n"), str);
-        TRYFUNC(FLIControlShutter, dev, shtr);
     }
-    if(G->confio > -1){
-        // "Попытка сконфигурировать порт I/O как %d\n"
-        green(_("Try to convfigure I/O port as %d\n"), G->confio);
-        TRYFUNC(FLIConfigureIOPort, dev, G->confio);
+/*
+    int j;
+    info("%d sensors found", cap->tempSensorCount);
+    for(j = 0; j < (int)cap->tempSensorCount; ++j){
+        if(atik_camera_getTemperatureSensorStatus(j+1, &targetTemp))
+            info("Sensor %d temperature: %.1f", j, targetTemp);
     }
-    if(G->getio){
-        long iop;
-        TRYFUNC(FLIReadIOPort, dev, &iop);
-        if(!fli_err) green("CCDIOPORT=0x%02lx\n", iop);
+*/
+    if(G->shtr_cmd != SHUTTER_LEAVE){
+        if(!cap->hasShutter){
+            WARNX(_("Selected camera has no shutter"));
+        }else{
+            shuttercmd shtr = G->shtr_cmd;
+            char *str = NULL;
+            switch(shtr){
+                case SHUTTER_CLOSE:
+                    str = "Close";
+                break;
+                case SHUTTER_OPEN:
+                    str = "Open";
+                break;
+                default:
+                    ERRX(_("Unknown shutter command"));
+            }
+            green(_("%s CCD shutter\n"), str);
+            if(!atik_camera_setShutter((G->shtr_cmd == SHUTTER_CLOSE) ? 0 : 1)){
+                /// "Ошибка изменения состояния затвора"
+                WARNX(("Error changing shutter state"));
+            }
+        }
     }
-    if(G->setio > -1){
-        // "Попытка записи %d в порт I/O\n"
-        green(_("Try to write %d to I/O port\n"), G->setio);
-        TRYFUNC(FLIWriteIOPort, dev, G->setio);
+    if(G->exptime < 0.) signals(0); // turn off all
+    if(G->exptime < cap->minShortExposure) G->exptime = cap->minShortExposure;
+    info("Exposure time = %gs", G->exptime);
+    if(G->dark && !atik_camera_setDarkFrameMode(1)){
+        /// "Ошибка: не могу установить режим темновых"
+        ERRX(_("Error: can't set dark mode"));
     }
 
-    if(G->exptime < DBL_EPSILON) continue;
-    TRYFUNC(FLISetExposureTime, dev, G->exptime);
-    if(G->dark) frametype = FLI_FRAME_TYPE_DARK;
-    TRYFUNC(FLISetFrameType, dev, frametype);
-    //TRYFUNC(FLISetBitDepth, dev, G->fast ? FLI_MODE_8BIT : FLI_MODE_16BIT);
-    img = MALLOC(uint16_t, img_rows * row_width);
-    for (j = 0; j < G->nframes; j ++){
-        TRYFUNC(FLIGetTemperature, dev, &G->temperature); // temperature @ exp. start
+    if(G->fast && !atik_camera_set8BitMode(1)){
+        /// "Ошибка установки 8-битного режима"
+        ERRX(_("Can't set 8-bit mode"));
+    }
+
+    long img_rows, row_width, imgSize;
+    row_width = atik_camera_imageWidth(G->X1 - G->X0, G->hbin);
+    img_rows = atik_camera_imageHeight(G->Y1 - G->Y0, G->vbin);
+    imgSize = img_rows * row_width;
+    img = MALLOC(uint16_t, imgSize);
+    DBG("allocated 2x%ld bytes; X0=%d, X1=%d, Y0=%d, Y1=%d, w=%ld, h=%ld",
+        imgSize, G->X0, G->X1, G->Y0, G->Y1, row_width, img_rows);
+    int j;
+
+    for (j = 0; j < G->nframes; ++j){
+        atik_camera_getTemperatureSensorStatus(1, &targetTemp);
+        G->temperature = targetTemp; // temperature @ exp. start
         printf("\n\n");
-        // Захват кадра %d\n
+        /// Захват кадра %d\n
         printf(_("Capture frame %d\n"), j);
-        TRYFUNC(FLIExposeFrame, dev);
-        expStartsAt = time(NULL); // время начала экспозиции
-        do{
-            TRYFUNC(FLIGetTemperature, dev, &t_int);
-            TRYFUNC(FLIReadTemperature, dev, FLI_TEMPERATURE_EXTERNAL, &t_ext);
-            if(curtime(tm_buf)){
-                // дата/время
-                info("%s: %s\tText=%.2f\tTint=%.2f\n", _("date/time"), tm_buf, t_ext, t_int);
-            }
-            else WARNX("curtime() error");
-            TRYFUNC(FLIGetExposureStatus, dev, &ltmp);
-            if(fli_err) continue;
-            if(G->shtr_cmd > 0 && G->shtr_cmd & FLI_SHUTTER_EXTERNAL_EXPOSURE_CONTROL && ltmp == G->exptime){
-                // "ожидание внешнего триггера"
-                printf(_("wait for external trigger...\n"));
-                sleep(1);
-            }else{
-                // %.3f секунд до окончания экспозиции\n
-                printf(_("%.3f seconds till exposition ends\n"), ((float)ltmp) / 1000.);
-                if(ltmp > 10000) sleep(10);
-                else usleep(ltmp * 1000);
-            }
-        }while(ltmp);
-        // Считывание изображения:
-        printf(_("Read image: "));
-        int portion = 0;
-        for (row = 0; row < img_rows; row++){
-            TRYFUNC(FLIGrabRow, dev, &img[row * row_width], row_width);
-            if(fli_err) break;
-            int progress = (int)(((float)row / (float)img_rows) * 100.);
-            if(progress/5 > portion){
-                if((++portion)%2) printf("..");
-                else printf("%d%%", portion*5);
-                fflush(stdout);
-            }
+        expStartsAt = time(NULL);
+        // start exposition & wait
+        if(G->exptime < cap->maxShortExposure){ // Short exposure
+            if(!atik_camera_readCCD_delay(G->X0, G->Y0, G->X1 - G->X0,
+                G->Y1 - G->Y0, G->hbin, G->vbin, G->exptime))
+                    ERRX(_("Can't start short exposition!"));
+        }else{ // Long exposure
+            double time2wait = ((double)atik_camera_delay(G->exptime))/1e6;
+            double dtstart = dtime(); // time of exposition start
+            if(!atik_camera_startExposure(0))
+                ERRX(_("Can't start long exposition!"));
+            do{
+                atik_camera_getTemperatureSensorStatus(1, &targetTemp);
+                t_int = targetTemp;
+                if(curtime(tm_buf)){
+                    /// дата/время
+                    info("%s: %s\tTint=%.2f\n", _("date/time"), tm_buf, t_int);
+                }
+                else WARNX("curtime() error");
+                double t = time2wait - (dtime() - dtstart);
+                /// %.3f секунд до окончания экспозиции\n
+                printf(_("%.3f seconds till exposition ends\n"), t);
+                if(t > 10.) sleep(10);
+                else usleep(t*1e6);
+            }while(dtime() - dtstart < time2wait);
+            if(!atik_camera_readCCD(G->X0, G->Y0, G->X1 - G->X0,
+                G->Y1 - G->Y0, G->hbin, G->vbin))
+                    ERRX(_("Can't read exposed frame!"));
         }
-        printf("100%%\n");
+        info(_("Read image"));
+        if(!atik_camera_getImage(img, imgSize))
+            ERRX(_("getImage() failed"));
         curtime(tm_buf);
         print_stat(img, row_width * img_rows);
         inline void WRITEIMG(int (*writefn)(char*,int,int,void*), char *ext){
+            char buff[BUFF_SIZ];
             if(!check_filename(buff, G->outfile, ext) && !rewrite_ifexists)
-                // Не могу сохранить файл
+                /// Не могу сохранить файл
                 WARNX(_("Can't save file"));
             else{
                 if(rewrite_ifexists){
@@ -298,9 +299,10 @@ int main(int argc, char **argv){
                     if(strcmp(ext, "fit") == 0) p = "!";
                     snprintf(buff, BUFF_SIZ, "%s%s.%s", p, G->outfile, ext);
                 }
-                TRYFUNC(writefn, buff, row_width, img_rows, img);
-                // Файл записан в '%s'
-                if (fli_err == 0) info(_("File saved as '%s'"), buff);
+                if(writefn(buff, row_width, img_rows, img))
+                    WARNX(_("Can't write %s file"), ext);
+                /// Файл записан в '%s'
+                else info(_("File saved as '%s'"), buff);
             }
         }
             #ifdef USERAW
@@ -313,13 +315,13 @@ int main(int argc, char **argv){
         if(G->pause_len){
             double delta, time1 = dtime() + G->pause_len;
             while((delta = time1 - dtime()) > 0.){
-                // %d секунд до окончания паузы\n
+                atik_camera_getTemperatureSensorStatus(1, &targetTemp);
+                t_int = targetTemp;
+                /// %d секунд до окончания паузы\n
                 printf(_("%d seconds till pause ends\n"), (int)delta);
-                TRYFUNC(FLIGetTemperature, dev, &t_int);
-                TRYFUNC(FLIReadTemperature, dev, FLI_TEMPERATURE_EXTERNAL, &t_ext);
                 if(curtime(tm_buf)){
-                    // дата/время
-                    info("%s: %s\tText=%.2f\tTint=%.2f\n", _("date/time"), tm_buf, t_ext, t_int);
+                    /// дата/время
+                    info("%s: %s\tTint=%.2f\n", _("date/time"), tm_buf, t_int);
                 }
                 else info("curtime() error");
                 if(delta > 10) sleep(10);
@@ -327,7 +329,7 @@ int main(int argc, char **argv){
             }
         }
     }
-    */
+    if(G->warmup) atik_camera_initiateWarmUp();
     atik_camera_close();
     FREE(img);
     atik_list_destroy();
@@ -370,9 +372,7 @@ int writefits(char *filename, int width, int height, void *data){
     // OBSERVAT / Observatory name
     WRITEKEY(fp, TSTRING, "OBSERVAT", "Special Astrophysical Observatory, Russia", "Observatory name");
     // DETECTOR / detector
-    if(camera){
-        WRITEKEY(fp, TSTRING, "DETECTOR", camera, "Detector model");
-    }
+    WRITEKEY(fp, TSTRING, "DETECTOR", (char*)atik_camera_name(), "Detector model");
     // INSTRUME / Instrument
     if(G->instrument){
         WRITEKEY(fp, TSTRING, "INSTRUME", G->instrument, "Instrument");
@@ -380,8 +380,7 @@ int writefits(char *filename, int width, int height, void *data){
         WRITEKEY(fp, TSTRING, "INSTRUME", "direct imaging", "Instrument");
     snprintf(buf, 80, "%.g x %.g", pixX, pixY);
     // PXSIZE / pixel size
-    WRITEKEY(fp, TSTRING, "PXSIZE", buf, "Pixel size in m");
-    WRITEKEY(fp, TSTRING, "VIEWFLD", viewfield, "Camera field of view");
+    WRITEKEY(fp, TSTRING, "PXSIZE", buf, "Pixel size in mkm");
     // CRVAL1, CRVAL2 / Offset in X, Y
     if(G->X0) WRITEKEY(fp, TINT, "X0", &G->X0, "Subframe left border");
     if(G->Y0) WRITEKEY(fp, TINT, "Y0", &G->Y0, "Subframe upper border");
@@ -403,11 +402,10 @@ int writefits(char *filename, int width, int height, void *data){
     WRITEKEY(fp, TDOUBLE, "STATSTD", &std, "Std. of data value");
     WRITEKEY(fp, TDOUBLE, "TEMP0", &G->temperature, "Camera temperature at exp. start (degr C)");
     WRITEKEY(fp, TDOUBLE, "TEMP1", &t_int, "Camera temperature at exp. end (degr C)");
-    WRITEKEY(fp, TDOUBLE, "TEMPBODY", &t_ext, "Camera body temperature at exp. end (degr C)");
     tmp = (G->temperature + t_int) / 2. + 273.15;
     // CAMTEMP / Camera temperature (K)
     WRITEKEY(fp, TDOUBLE, "CAMTEMP", &tmp, "Camera temperature (K)");
-    tmp = (double)G->exptime / 1000.;
+    tmp = (double)G->exptime;
     // EXPTIME / actual exposition time (sec)
     WRITEKEY(fp, TDOUBLE, "EXPTIME", &tmp, "actual exposition time (sec)");
     // DATE / Creation date (YYYY-MM-DDThh:mm:ss, UTC)
