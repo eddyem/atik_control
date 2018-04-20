@@ -61,7 +61,7 @@ glob_pars const Gdefault = {
 myoption cmdlnopts[] = {
     {"help",    NO_ARGS,    &help,   1,     arg_none,   NULL,               N_("show this help")},
     {"force",   NO_ARGS,    &rewrite_ifexists,1,arg_none,NULL,              N_("rewrite output file if exists")},
-    {"verbose", NO_ARGS,    NULL,   'V',    arg_none,   APTR(&verbose),     N_("verbose level (each -v increase it)")},
+    {"verbose", NO_ARGS,    NULL,   'V',    arg_none,   APTR(&verbose),     N_("verbose level (each -V increase it)")},
     {"camname", NEED_ARG,   NULL,   'c',    arg_string, APTR(&G.camname),   N_("camera device name")},
     {"dark",    NO_ARGS,    NULL,   'd',    arg_int,    APTR(&G.dark),      N_("not open shutter, when exposing (\"dark frames\")")},
     {"open-shutter",NO_ARGS,&G.shtr_cmd,SHUTTER_OPEN,arg_none,NULL,     N_("open shutter")},

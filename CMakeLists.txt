@@ -88,7 +88,7 @@ set(RU_FILE ${LCPATH}/ru.po)
 set(CTAGS_FILE ${CMAKE_SOURCE_DIR}/${PROJ}.c.tags)
 
 # exe file
-add_executable(${PROJ} ${SOURCES} ${PO_FILE} ${MO_FILE})
+add_executable(${PROJ} ${SOURCES} ${MO_FILE})
 target_link_libraries(${PROJ} ${${PROJ}_LIBRARIES} -latikccd)
 include_directories(${${PROJ}_INCLUDE_DIRS})
 link_directories(${${PROJ}_LIBRARY_DIRS} )

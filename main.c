@@ -211,10 +211,10 @@ int main(int argc, char **argv){
             char *str = NULL;
             switch(shtr){
                 case SHUTTER_CLOSE:
-                    str = "Close";
+                    str = _("Close");
                 break;
                 case SHUTTER_OPEN:
-                    str = "Open";
+                    str = _("Open");
                 break;
                 default:
                     ERRX(_("Unknown shutter command"));

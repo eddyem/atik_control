@@ -7,7 +7,7 @@
 msgid   ""
 msgstr  "Project-Id-Version: PACKAGE VERSION\n"
         "Report-Msgid-Bugs-To: \n"
-        "POT-Creation-Date: 2018-04-16 15:23+0300\n"
+        "POT-Creation-Date: 2018-04-20 09:12+0300\n"
         "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
         "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
         "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,203 +16,346 @@ msgstr  "Project-Id-Version: PACKAGE VERSION\n"
         "Content-Type: text/plain; charset=koi8-r\n"
         "Content-Transfer-Encoding: 8bit\n"
 
+#. / %.3f секунд до окончания экспозиции\n
+#: /home/eddy/Docs/SAO/Cameras/Atik/MY_/main.c:310
+#, c-format
+msgid   "%.3f seconds till exposition ends\n"
+msgstr  "%.3f секунд до окончания экспозиции\n"
+
+#. / %d секунд до окончания паузы\n
+#: /home/eddy/Docs/SAO/Cameras/Atik/MY_/main.c:365
+#, c-format
+msgid   "%d seconds till pause ends\n"
+msgstr  "%d секунд до окончания паузы\n"
+
+#: /home/eddy/Docs/SAO/Cameras/Atik/MY_/main.c:222
+#, c-format
+msgid   "%s CCD shutter\n"
+msgstr  "%s затвор ПЗС\n"
+
 #. / "%s: необходим аргумент!"
 #: /home/eddy/Docs/SAO/Cameras/Atik/MY_/parseargs.c:485
 #, c-format
 msgid   "%s: argument needed!"
-msgstr  ""
+msgstr  "%s: необходим аргумент!"
 
-#: /home/eddy/Docs/SAO/Cameras/Atik/MY_/main.c:109
+#. / Аварийное завершение с кодом %d
+#: /home/eddy/Docs/SAO/Cameras/Atik/MY_/main.c:85
+#, c-format
+msgid   "Abort with code %d"
+msgstr  "Аварийное завершение с кодом %d"
+
+#. / Биннинг должен иметь значение от 1 до %d(H) и %d(V)
+#: /home/eddy/Docs/SAO/Cameras/Atik/MY_/main.c:152
+#, c-format
+msgid   "Binning should have values from 1 to %d(H) and %d(V)"
+msgstr  "Биннинг должен иметь значение от 1 до %d(H) и %d(V)"
+
+#: /home/eddy/Docs/SAO/Cameras/Atik/MY_/main.c:126
 #, c-format
 msgid   "Camera \"%s\" not found"
-msgstr  ""
+msgstr  "Камера \"%s\" не найдена"
 
 #. / "Не могу закрыть mmap'нутый файл"
 #: /home/eddy/Docs/SAO/Cameras/Atik/MY_/usefull_macros.c:195
 msgid   "Can't close mmap'ed file"
-msgstr  ""
+msgstr  "Не могу закрыть mmap'нутый файл"
 
 #. Get settings
 #. / "Не могу получить настройки"
 #: /home/eddy/Docs/SAO/Cameras/Atik/MY_/usefull_macros.c:301
 msgid   "Can't get settings"
-msgstr  ""
+msgstr  "Не могу получить настройки"
 
 #. / "Не могу munmap"
 #: /home/eddy/Docs/SAO/Cameras/Atik/MY_/usefull_macros.c:205
 msgid   "Can't munmap"
-msgstr  ""
+msgstr  "Не могу munmap"
 
 #. / "Не могу открыть %s для чтения"
 #: /home/eddy/Docs/SAO/Cameras/Atik/MY_/usefull_macros.c:178
 #, c-format
 msgid   "Can't open %s for reading"
-msgstr  ""
+msgstr  "Не могу открыть %s для чтения"
 
-#: /home/eddy/Docs/SAO/Cameras/Atik/MY_/main.c:118
-#: /home/eddy/Docs/SAO/Cameras/Atik/MY_/main.c:146
+#: /home/eddy/Docs/SAO/Cameras/Atik/MY_/main.c:134
 msgid   "Can't open camera device"
-msgstr  ""
+msgstr  "Не могу открыть устройство камеры"
+
+#: /home/eddy/Docs/SAO/Cameras/Atik/MY_/main.c:316
+msgid   "Can't read exposed frame!"
+msgstr  "Не могу считать изображение!"
+
+#. / Не могу сохранить файл
+#: /home/eddy/Docs/SAO/Cameras/Atik/MY_/main.c:337
+msgid   "Can't save file"
+msgstr  "Не могу сохранить файл"
+
+#. / "Ошибка установки 8-битного режима"
+#: /home/eddy/Docs/SAO/Cameras/Atik/MY_/main.c:266
+msgid   "Can't set 8-bit mode"
+msgstr  "Ошибка установки 8-битного режима"
+
+#. / "Ошибка установки режима предварительного просмотра"
+#: /home/eddy/Docs/SAO/Cameras/Atik/MY_/main.c:271
+msgid   "Can't set preview mode"
+msgstr  "Ошибка установки режима предварительного просмотра"
 
 #. / "Не могу установить настройки"
 #: /home/eddy/Docs/SAO/Cameras/Atik/MY_/usefull_macros.c:312
 msgid   "Can't set settings"
-msgstr  ""
+msgstr  "Не могу установить настройки"
 
 #. / "Не могу настроить консоль"
 #: /home/eddy/Docs/SAO/Cameras/Atik/MY_/usefull_macros.c:231
 msgid   "Can't setup console"
-msgstr  ""
+msgstr  "Не могу настроить консоль"
+
+#: /home/eddy/Docs/SAO/Cameras/Atik/MY_/main.c:299
+msgid   "Can't start long exposition!"
+msgstr  "Не могу начать длинную экспозицию!"
+
+#: /home/eddy/Docs/SAO/Cameras/Atik/MY_/main.c:294
+msgid   "Can't start short exposition!"
+msgstr  "Не могу начать короткую экспозицию!"
 
 #. / "Не могу выполнить stat %s"
 #: /home/eddy/Docs/SAO/Cameras/Atik/MY_/usefull_macros.c:183
 #, c-format
 msgid   "Can't stat %s"
-msgstr  ""
+msgstr  "Не могу выполнить stat %s"
 
-#: /home/eddy/Docs/SAO/Cameras/Atik/MY_/main.c:153
+#. / Не могу записать %s файл
+#: /home/eddy/Docs/SAO/Cameras/Atik/MY_/main.c:345
+#, c-format
+msgid   "Can't write %s file"
+msgstr  "Не могу записать %s файл"
+
+#. / Захват кадра %d\n
+#: /home/eddy/Docs/SAO/Cameras/Atik/MY_/main.c:288
+#, c-format
+msgid   "Capture frame %d\n"
+msgstr  "Захват кадра %d\n"
+
+#: /home/eddy/Docs/SAO/Cameras/Atik/MY_/main.c:214
+msgid   "Close"
+msgstr  "Закрыть"
+
+#: /home/eddy/Docs/SAO/Cameras/Atik/MY_/main.c:155
 msgid   "Colour camera!"
-msgstr  ""
+msgstr  "Цветная камера! ЭТО ЖЕСТЬ!!!"
 
-#: /home/eddy/Docs/SAO/Cameras/Atik/MY_/main.c:112
+#. / "Ошибка во время установки температуры ПЗС %g"
+#: /home/eddy/Docs/SAO/Cameras/Atik/MY_/main.c:194
+#, c-format
+msgid   "Error when trying to set cooling temperature %g"
+msgstr  "Ошибка во время установки температуры ПЗС %g"
+
+#. / "Ошибка: не могу установить режим темновых"
+#: /home/eddy/Docs/SAO/Cameras/Atik/MY_/main.c:258
+msgid   "Error: can't set dark mode"
+msgstr  "Ошибка: не могу установить режим темновых"
+
+#. / Файл записан в '%s'\n
+#: /home/eddy/Docs/SAO/Cameras/Atik/MY_/main.c:348
+#, c-format
+msgid   "File saved as '%s'\n"
+msgstr  "Файл записан в '%s'\n"
+
+#: /home/eddy/Docs/SAO/Cameras/Atik/MY_/main.c:129
 #, c-format
 msgid   "Found %d cameras, give a specific name with \"--camname\" option"
-msgstr  ""
+msgstr  "Обнаружено %d камер, укажите конкретное имя опцией \"--camname\""
 
 #. Статистика по изображению:\n
-#: /home/eddy/Docs/SAO/Cameras/Atik/MY_/main.c:506
+#: /home/eddy/Docs/SAO/Cameras/Atik/MY_/main.c:555
 #, c-format
 msgid   "Image stat:\n"
-msgstr  ""
+msgstr  "Статистика по изображению:\n"
 
 #. / "Целое вне допустимого диапазона"
 #: /home/eddy/Docs/SAO/Cameras/Atik/MY_/parseargs.c:86
 msgid   "Integer out of range"
-msgstr  ""
+msgstr  "Целое вне допустимого диапазона"
 
 #. / "Ошибка mmap"
 #: /home/eddy/Docs/SAO/Cameras/Atik/MY_/usefull_macros.c:190
 msgid   "Mmap error for input"
-msgstr  ""
+msgstr  "Ошибка mmap"
 
-#: /home/eddy/Docs/SAO/Cameras/Atik/MY_/cmdlnopts.c:76
-msgid   "N flushes before exposing"
-msgstr  ""
-
-#: /home/eddy/Docs/SAO/Cameras/Atik/MY_/main.c:105
+#: /home/eddy/Docs/SAO/Cameras/Atik/MY_/main.c:122
 msgid   "No CCD found"
-msgstr  ""
+msgstr  "Камер не обнаружено"
 
 #: /home/eddy/Docs/SAO/Cameras/Atik/MY_/usefull_macros.c:173
 msgid   "No filename given!"
-msgstr  ""
+msgstr  "Не указано имя файла!"
+
+#: /home/eddy/Docs/SAO/Cameras/Atik/MY_/main.c:217
+msgid   "Open"
+msgstr  "Открыть"
+
+#: /home/eddy/Docs/SAO/Cameras/Atik/MY_/main.c:318
+msgid   "Read image"
+msgstr  "Считывание изображения"
+
+#: /home/eddy/Docs/SAO/Cameras/Atik/MY_/main.c:208
+msgid   "Selected camera has no shutter"
+msgstr  "У выбранной камеры нет затвора"
+
+#. "Установка температуры ПЗС: %g градусов Цельсия\n"
+#: /home/eddy/Docs/SAO/Cameras/Atik/MY_/main.c:191
+#, c-format
+msgid   "Set CCD temperature to %g degr.C\n"
+msgstr  "Установка температуры ПЗС: %g градусов Цельсия\n"
+
+#: /home/eddy/Docs/SAO/Cameras/Atik/MY_/main.c:254
+#, c-format
+msgid   "This camera doesn't support exposures with length more than %gs"
+msgstr  "Данная камера не поддерживает экспозиции больше %gс"
+
+#. / "У данной камеры отсутствует 8-битный режим"
+#: /home/eddy/Docs/SAO/Cameras/Atik/MY_/main.c:263
+msgid   "This camera has no 8-bit mode"
+msgstr  "У данной камеры отсутствует 8-битный режим"
+
+#: /home/eddy/Docs/SAO/Cameras/Atik/MY_/main.c:220
+msgid   "Unknown shutter command"
+msgstr  "Неизвестная команда затвора"
 
 #. / "Неправильный аргумент \"%s\" параметра \"%s\""
 #: /home/eddy/Docs/SAO/Cameras/Atik/MY_/parseargs.c:490
 #, c-format
 msgid   "Wrong argument \"%s\" of parameter \"%s\""
-msgstr  ""
+msgstr  "Неправильный аргумент \"%s\" параметра \"%s\""
 
 #. amount of pcount and/or scount wrong
 #. / "Неправильный формат строки помощи"
 #: /home/eddy/Docs/SAO/Cameras/Atik/MY_/parseargs.c:56
 msgid   "Wrong helpstring!"
-msgstr  ""
+msgstr  "Неправильный формат строки помощи"
 
 #. / "Неправильный параметр: %s"
 #: /home/eddy/Docs/SAO/Cameras/Atik/MY_/parseargs.c:480
 #, c-format
 msgid   "Wrong parameter: %s"
-msgstr  ""
+msgstr  "Неправильный параметр: %s"
 
-#: /home/eddy/Docs/SAO/Cameras/Atik/MY_/cmdlnopts.c:66
-msgid   "camera device name"
-msgstr  ""
-
-#: /home/eddy/Docs/SAO/Cameras/Atik/MY_/cmdlnopts.c:69
-msgid   "close shutter"
-msgstr  ""
-
-#: /home/eddy/Docs/SAO/Cameras/Atik/MY_/cmdlnopts.c:82
-msgid   "frame X0 coordinate (-1 - all with overscan)"
-msgstr  ""
-
-#: /home/eddy/Docs/SAO/Cameras/Atik/MY_/cmdlnopts.c:84
-msgid   "frame X1 coordinate (-1 - all with overscan)"
-msgstr  ""
-
-#: /home/eddy/Docs/SAO/Cameras/Atik/MY_/cmdlnopts.c:83
-msgid   "frame Y0 coordinate (-1 - all with overscan)"
-msgstr  ""
-
-#: /home/eddy/Docs/SAO/Cameras/Atik/MY_/cmdlnopts.c:85
-msgid   "frame Y1 coordinate (-1 - all with overscan)"
-msgstr  ""
-
-#: /home/eddy/Docs/SAO/Cameras/Atik/MY_/cmdlnopts.c:77
-msgid   "horizontal binning to N pixels"
-msgstr  ""
-
-#: /home/eddy/Docs/SAO/Cameras/Atik/MY_/cmdlnopts.c:72
-msgid   "instrument name"
-msgstr  ""
-
-#: /home/eddy/Docs/SAO/Cameras/Atik/MY_/cmdlnopts.c:80
-msgid   "make pause for N seconds between expositions"
-msgstr  ""
-
-#: /home/eddy/Docs/SAO/Cameras/Atik/MY_/cmdlnopts.c:79
-msgid   "make series of N frames"
-msgstr  ""
-
-#: /home/eddy/Docs/SAO/Cameras/Atik/MY_/cmdlnopts.c:67
-msgid   "not open shutter, when exposing (\"dark frames\")"
-msgstr  ""
-
-#: /home/eddy/Docs/SAO/Cameras/Atik/MY_/cmdlnopts.c:73
-msgid   "object name"
-msgstr  ""
-
-#: /home/eddy/Docs/SAO/Cameras/Atik/MY_/cmdlnopts.c:71
-msgid   "object type (neon, object, flat etc)"
-msgstr  ""
-
-#: /home/eddy/Docs/SAO/Cameras/Atik/MY_/cmdlnopts.c:74
-msgid   "observers' names"
-msgstr  ""
-
-#: /home/eddy/Docs/SAO/Cameras/Atik/MY_/cmdlnopts.c:75
-msgid   "observing program name"
-msgstr  ""
-
-#: /home/eddy/Docs/SAO/Cameras/Atik/MY_/cmdlnopts.c:68
-msgid   "open shutter"
-msgstr  ""
-
-#: /home/eddy/Docs/SAO/Cameras/Atik/MY_/cmdlnopts.c:70
-msgid   "program author"
-msgstr  ""
-
-#: /home/eddy/Docs/SAO/Cameras/Atik/MY_/cmdlnopts.c:64
-msgid   "rewrite output file if exists"
-msgstr  ""
-
-#: /home/eddy/Docs/SAO/Cameras/Atik/MY_/cmdlnopts.c:86
-msgid   "set CCD temperature to given value (degr C)"
-msgstr  ""
-
-#: /home/eddy/Docs/SAO/Cameras/Atik/MY_/cmdlnopts.c:81
-msgid   "set exposure time to given value (ms)"
-msgstr  ""
-
-#: /home/eddy/Docs/SAO/Cameras/Atik/MY_/cmdlnopts.c:63
-msgid   "show this help"
-msgstr  ""
+#. / X1 и Y1 должны быть больше X0 и Y0
+#: /home/eddy/Docs/SAO/Cameras/Atik/MY_/main.c:184
+msgid   "X1 and Y1 should be greater than X0 and Y0"
+msgstr  "X1 и Y1 должны быть больше X0 и Y0"
 
 #: /home/eddy/Docs/SAO/Cameras/Atik/MY_/cmdlnopts.c:65
-msgid   "verbose level (each -v increase it)"
-msgstr  ""
+msgid   "camera device name"
+msgstr  "Имя устройства камеры"
+
+#: /home/eddy/Docs/SAO/Cameras/Atik/MY_/cmdlnopts.c:68
+msgid   "close shutter"
+msgstr  "закрыть затвор"
+
+#. / дата/время
+#: /home/eddy/Docs/SAO/Cameras/Atik/MY_/main.c:305
+#: /home/eddy/Docs/SAO/Cameras/Atik/MY_/main.c:368
+msgid   "date/time"
+msgstr  "дата/время"
+
+#: /home/eddy/Docs/SAO/Cameras/Atik/MY_/cmdlnopts.c:86
+msgid   "fast (8-bit) mode"
+msgstr  "быстрый (8-битный) режим"
+
+#: /home/eddy/Docs/SAO/Cameras/Atik/MY_/cmdlnopts.c:80
+msgid   "frame X0 coordinate"
+msgstr  "координата X0 (-1 - все вместе с оверсканом)"
+
+#: /home/eddy/Docs/SAO/Cameras/Atik/MY_/cmdlnopts.c:82
+msgid   "frame X1 coordinate"
+msgstr  "координата X1 (-1 - все вместе с оверсканом)"
+
+#: /home/eddy/Docs/SAO/Cameras/Atik/MY_/cmdlnopts.c:81
+msgid   "frame Y0 coordinate"
+msgstr  "координата Y0 (-1 - все вместе с оверсканом)"
+
+#: /home/eddy/Docs/SAO/Cameras/Atik/MY_/cmdlnopts.c:83
+msgid   "frame Y1 coordinate"
+msgstr  "координата Y1 (-1 - все вместе с оверсканом)"
+
+#: /home/eddy/Docs/SAO/Cameras/Atik/MY_/main.c:320
+msgid   "getImage() failed"
+msgstr  "ошибка getImage()"
+
+#: /home/eddy/Docs/SAO/Cameras/Atik/MY_/cmdlnopts.c:75
+msgid   "horizontal binning to N pixels"
+msgstr  "горизонтальный биннинг в N пикселей"
+
+#: /home/eddy/Docs/SAO/Cameras/Atik/MY_/cmdlnopts.c:71
+msgid   "instrument name"
+msgstr  "название прибора"
 
 #: /home/eddy/Docs/SAO/Cameras/Atik/MY_/cmdlnopts.c:78
+msgid   "make pause for N seconds between expositions"
+msgstr  "пауза в N секунд между экспозициями"
+
+#: /home/eddy/Docs/SAO/Cameras/Atik/MY_/cmdlnopts.c:77
+msgid   "make series of N frames"
+msgstr  "серия из N кадров"
+
+#: /home/eddy/Docs/SAO/Cameras/Atik/MY_/cmdlnopts.c:66
+msgid   "not open shutter, when exposing (\"dark frames\")"
+msgstr  "не открывать затвор во время экспозиции (\"темновые\")"
+
+#: /home/eddy/Docs/SAO/Cameras/Atik/MY_/cmdlnopts.c:72
+msgid   "object name"
+msgstr  "название объекта"
+
+#: /home/eddy/Docs/SAO/Cameras/Atik/MY_/cmdlnopts.c:70
+msgid   "object type (neon, object, flat etc)"
+msgstr  "тип объекта (neon, object, flat и т.п.)"
+
+#: /home/eddy/Docs/SAO/Cameras/Atik/MY_/cmdlnopts.c:73
+msgid   "observers' names"
+msgstr  "имена наблюдателей"
+
+#: /home/eddy/Docs/SAO/Cameras/Atik/MY_/cmdlnopts.c:74
+msgid   "observing program name"
+msgstr  "название программы наблюдения"
+
+#: /home/eddy/Docs/SAO/Cameras/Atik/MY_/cmdlnopts.c:67
+msgid   "open shutter"
+msgstr  "открыть затвор"
+
+#: /home/eddy/Docs/SAO/Cameras/Atik/MY_/cmdlnopts.c:87
+msgid   "preview mode"
+msgstr  "режим предварительного просмотра"
+
+#: /home/eddy/Docs/SAO/Cameras/Atik/MY_/cmdlnopts.c:69
+msgid   "program author"
+msgstr  "автор программы"
+
+#: /home/eddy/Docs/SAO/Cameras/Atik/MY_/cmdlnopts.c:63
+msgid   "rewrite output file if exists"
+msgstr  "перезаписать выходной файл (если есть)"
+
+#: /home/eddy/Docs/SAO/Cameras/Atik/MY_/cmdlnopts.c:84
+msgid   "set CCD temperature to given value (degr C)"
+msgstr  "установить температуру светоприемника (гр.Ц.)"
+
+#: /home/eddy/Docs/SAO/Cameras/Atik/MY_/cmdlnopts.c:79
+msgid   "set exposure time to given value (seconds!!!)"
+msgstr  "установить время экспозиции (секунды!!!)"
+
+#: /home/eddy/Docs/SAO/Cameras/Atik/MY_/cmdlnopts.c:62
+msgid   "show this help"
+msgstr  "показать эту справку"
+
+#: /home/eddy/Docs/SAO/Cameras/Atik/MY_/cmdlnopts.c:64
+msgid   "verbose level (each -V increase it)"
+msgstr  "уровень сообщений (каждый -V увеличивает его)"
+
+#: /home/eddy/Docs/SAO/Cameras/Atik/MY_/cmdlnopts.c:76
 msgid   "vertical binning to N pixels"
-msgstr  ""
+msgstr  "вертикальный биннинг в N пикселей"
+
+#: /home/eddy/Docs/SAO/Cameras/Atik/MY_/cmdlnopts.c:85
+msgid   "warm up CCD"
+msgstr  "нагрев ПЗС"
