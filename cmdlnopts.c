@@ -77,13 +77,14 @@ myoption cmdlnopts[] = {
     {"nframes", NEED_ARG,   NULL,   'n',    arg_int,    APTR(&G.nframes),   N_("make series of N frames")},
     {"pause",   NEED_ARG,   NULL,   'p',    arg_int,    APTR(&G.pause_len), N_("make pause for N seconds between expositions")},
     {"exptime", NEED_ARG,   NULL,   'x',    arg_double, APTR(&G.exptime),   N_("set exposure time to given value (seconds!!!)")},
-    {"X0",      NEED_ARG,   NULL,   0,      arg_int,    APTR(&G.X0),        N_("frame X0 coordinate (-1 - all with overscan)")},
-    {"Y0",      NEED_ARG,   NULL,   0,      arg_int,    APTR(&G.Y0),        N_("frame Y0 coordinate (-1 - all with overscan)")},
-    {"X1",      NEED_ARG,   NULL,   0,      arg_int,    APTR(&G.X1),        N_("frame X1 coordinate (-1 - all with overscan)")},
-    {"Y1",      NEED_ARG,   NULL,   0,      arg_int,    APTR(&G.Y1),        N_("frame Y1 coordinate (-1 - all with overscan)")},
+    {"X0",      NEED_ARG,   NULL,   0,      arg_int,    APTR(&G.X0),        N_("frame X0 coordinate")},
+    {"Y0",      NEED_ARG,   NULL,   0,      arg_int,    APTR(&G.Y0),        N_("frame Y0 coordinate")},
+    {"X1",      NEED_ARG,   NULL,   0,      arg_int,    APTR(&G.X1),        N_("frame X1 coordinate")},
+    {"Y1",      NEED_ARG,   NULL,   0,      arg_int,    APTR(&G.Y1),        N_("frame Y1 coordinate")},
     {"set-temp",NEED_ARG,   NULL,   't',    arg_double, APTR(&G.temperature),N_("set CCD temperature to given value (degr C)")},
     {"warmup",  NO_ARGS,    NULL,   'w',    arg_none,   APTR(&G.warmup),    N_("warm up CCD")},
     {"fast",    NO_ARGS,    NULL,   'f',    arg_none,   APTR(&G.fast),      N_("fast (8-bit) mode")},
+    {"preview", NO_ARGS,    NULL,   'e',    arg_none,   APTR(&G.preview),   N_("preview mode")},
     end_option
 };
 

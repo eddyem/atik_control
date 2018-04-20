@@ -53,6 +53,7 @@ typedef struct{
     int pause_len;      // pause (in seconds) between expositions
     int shtr_cmd;       // shutter command
     int fast;           // 8bit mode
+    int preview;        // preview mode
     double temperature; // temperature of CCD
 } glob_pars;
 

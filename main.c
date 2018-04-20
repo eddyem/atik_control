@@ -35,7 +35,10 @@
 #include <unistd.h>
 #include <fitsio.h>
 #include <math.h>
-
+#include <signal.h>
+#ifdef USE_BTA
+#include "bta_print.h"
+#endif
 #include "main.h"
 #include "atikcore.h"
 
@@ -61,8 +64,8 @@ size_t curtime(char *s_time){ // current date/time
     return strftime(s_time, TMBUFSIZ, "%d/%m/%Y,%H:%M:%S", localtime(&tm));
 }
 
-double t_int;    // external & CCD temperatures @exp. end
-time_t expStartsAt;     // exposition start time (time_t)
+double t_int=1e6;    // CCD temperature @exposition end
+struct timeval expStartsAt;     // exposition start time
 
 int check_filename(char *buff, char *outfile, char *ext){
     struct stat filestat;
@@ -77,8 +80,16 @@ int check_filename(char *buff, char *outfile, char *ext){
 }
 
 void signals(int signo){
+    if(signo){
+        /// Аварийное завершение с кодом %d
+        WARNX(_("Abort with code %d"), signo);
+        signal(signo, SIG_DFL);
+    }
+    DBG("abort exp");
     atik_camera_abortExposure();
+    DBG("close");
     atik_camera_close();
+    DBG("exit");
     exit(signo);
 }
 
@@ -97,6 +108,12 @@ int main(int argc, char **argv){
     int num;
     char *msg = NULL;
     initial_setup();
+    signal(SIGTERM, signals); // kill (-15) - quit
+    signal(SIGHUP, signals);  // hup - quit
+    signal(SIGINT, signals);  // ctrl+C - quit
+    signal(SIGQUIT, signals); // ctrl+\ - quit
+    signal(SIGTSTP, SIG_IGN); // ignore ctrl+Z
+
     G = parse_args(argc, argv);
     /*
      * Find CCDs and work with each of them
@@ -112,37 +129,16 @@ int main(int argc, char **argv){
         ERRX(_("Found %d cameras, give a specific name with \"--camname\" option"));
     }
     uint16_t *img = NULL;
-    COOLING_STATE state = COOLING_ON;
-    float targetTemp, power;
     DBG("Try to open %s", atik_camera_name());
     if(atik_camera_open() == 0)
         ERRX(_("Can't open camera device"));
-//    if(atik_camera_setPreviewMode(0) == 0) WARNX("failed");
-//    atik_camera_setDarkFrameMode(0);
-//    atik_camera_set8BitMode(0);
-    if(atik_camera_getCoolingStatus(&state, &targetTemp, &power)){
-        switch (state){
-            case COOLING_INACTIVE:
-                msg = "inactive";
-            break;
-            case COOLING_ON:
-                msg = "cooling on";
-            break;
-            case COOLING_SETPOINT:
-                msg = "cooling to setpoint";
-            break;
-            case WARMING_UP:
-                msg = "warming up";
-            break;
-            default:
-                msg = "unknown";
-        }
-        info("Cooling status: %s; targetTemp=%.1f, power=%.1f", msg, targetTemp, power);
-    }
-    if(atik_camera_getTemperatureSensorStatus(1, &targetTemp)){
-        info("CCD temperature: %.1f", targetTemp);
-    }
+    DBG("reset preview, 8bit and dark");
+    if(atik_camera_setPreviewMode(0) == 0) WARNX("failed");
+    atik_camera_setDarkFrameMode(0);
+    atik_camera_set8BitMode(0);
     info("Binlist: %s", atik_camera_getBinList());
+    COOLING_STATE state = COOLING_ON;
+    float targetTemp, power;
     AtikCapabilities *cap = atik_camera_getCapabilities();
     info("Sensor size: %dx%d pix", cap->pixelCountX, cap->pixelCountY);
     if(G->X1 > (int)cap->pixelCountX || G->X1 < 1) G->X1 = cap->pixelCountX;
@@ -153,8 +149,7 @@ int main(int argc, char **argv){
     if(G->hbin > (int)cap->maxBinX || G->hbin < 1 ||
         G->vbin > (int)cap->maxBinY || G->vbin < 1){
             /// Биннинг должен иметь значение от 1 до %d(H) и %d(V)
-            ERRX(_("Binning should have values from 1 to %d(H) и %d(V)"),
-                cap->maxBinX, cap->maxBinY);
+            ERRX(_("Binning should have values from 1 to %d(H) and %d(V)"), cap->maxBinX, cap->maxBinY);
         }
     info("Short expositions: min=%gs, max=%gs", cap->minShortExposure, cap->maxShortExposure);
     if(cap->colour != COLOUR_NONE) WARNX(_("Colour camera!"));
@@ -179,6 +174,10 @@ int main(int argc, char **argv){
             msg = "unknown";
     }
     info("Camera type: %s", msg);
+    /*{int g, o;
+    if(atik_camera_getGain(&g, &o)){
+        info("Camera gain: %d, gain offset: %d", g, o);
+    }}*/
 
     if((G->X1 > -1 && G->X1 < G->X0) || (G->Y1 > -1 && G->Y1 < G->Y0)){
         /// X1 и Y1 должны быть больше X0 и Y0
@@ -195,6 +194,7 @@ int main(int argc, char **argv){
             WARNX(_("Error when trying to set cooling temperature %g"), G->temperature);
         }
     }
+
 /*
     int j;
     info("%d sensors found", cap->tempSensorCount);
@@ -226,17 +226,49 @@ int main(int argc, char **argv){
             }
         }
     }
+    if(atik_camera_getCoolingStatus(&state, &targetTemp, &power)){
+        switch (state){
+            case COOLING_INACTIVE:
+                msg = "inactive";
+            break;
+            case COOLING_ON:
+                msg = "cooling on";
+            break;
+            case COOLING_SETPOINT:
+                msg = "cooling to setpoint";
+            break;
+            case WARMING_UP:
+                msg = "warming up";
+            break;
+            default:
+                msg = "unknown";
+        }
+        info("Cooling status: %s; targetTemp=%.1f, power=%.1f", msg, targetTemp, power);
+    }
+    if(atik_camera_getTemperatureSensorStatus(1, &targetTemp)){
+        info("CCD temperature: %.1f", targetTemp);
+    }
     if(G->exptime < 0.) signals(0); // turn off all
     if(G->exptime < cap->minShortExposure) G->exptime = cap->minShortExposure;
+    if(G->exptime > cap->maxShortExposure && !cap->supportsLongExposure)
+        ERRX(_("This camera doesn't support exposures with length more than %gs"), cap->maxShortExposure);
     info("Exposure time = %gs", G->exptime);
     if(G->dark && !atik_camera_setDarkFrameMode(1)){
         /// "Ошибка: не могу установить режим темновых"
         ERRX(_("Error: can't set dark mode"));
     }
-
-    if(G->fast && !atik_camera_set8BitMode(1)){
+    if(G->fast){
+        if(!cap->has8BitMode){
+            /// "У данной камеры отсутствует 8-битный режим"
+            WARNX(_("This camera has no 8-bit mode"));
+        }else if(!atik_camera_set8BitMode(1)){
         /// "Ошибка установки 8-битного режима"
-        ERRX(_("Can't set 8-bit mode"));
+            ERRX(_("Can't set 8-bit mode"));
+        }
+    }
+    if(G->preview && !atik_camera_setPreviewMode(1)){
+        /// "Ошибка установки режима предварительного просмотра"
+        ERRX(_("Can't set preview mode"));
     }
 
     long img_rows, row_width, imgSize;
@@ -254,7 +286,7 @@ int main(int argc, char **argv){
         printf("\n\n");
         /// Захват кадра %d\n
         printf(_("Capture frame %d\n"), j);
-        expStartsAt = time(NULL);
+        gettimeofday(&expStartsAt, NULL);
         // start exposition & wait
         if(G->exptime < cap->maxShortExposure){ // Short exposure
             if(!atik_camera_readCCD_delay(G->X0, G->Y0, G->X1 - G->X0,
@@ -289,26 +321,38 @@ int main(int argc, char **argv){
         curtime(tm_buf);
         print_stat(img, row_width * img_rows);
         inline void WRITEIMG(int (*writefn)(char*,int,int,void*), char *ext){
-            char buff[BUFF_SIZ];
-            if(!check_filename(buff, G->outfile, ext) && !rewrite_ifexists)
-                /// Не могу сохранить файл
-                WARNX(_("Can't save file"));
-            else{
-                if(rewrite_ifexists){
-                    char *p = "";
-                    if(strcmp(ext, "fit") == 0) p = "!";
+            char buff[BUFF_SIZ], nameok = 0;
+            if(rewrite_ifexists){
+                char *p = "";
+                if(strcmp(ext, "fits") == 0) p = "!";
+                if(G->nframes > 1){
+                    snprintf(buff, BUFF_SIZ, "%s%s_%04d.%s", p, G->outfile, j, ext);
+                }else{
                     snprintf(buff, BUFF_SIZ, "%s%s.%s", p, G->outfile, ext);
                 }
-                if(writefn(buff, row_width, img_rows, img))
+                nameok = 1;
+            }else{
+                if(!check_filename(buff, G->outfile, ext)){
+                    /// Не могу сохранить файл
+                    WARNX(_("Can't save file"));
+                }else{
+                    nameok = 1;
+                }
+            }
+            if(nameok){
+                if(writefn(buff, row_width, img_rows, img)){
+                    /// Не могу записать %s файл
                     WARNX(_("Can't write %s file"), ext);
-                /// Файл записан в '%s'
-                else info(_("File saved as '%s'"), buff);
+                }else{
+                    /// Файл записан в '%s'\n
+                    printf(_("File saved as '%s'\n"), buff);
+                }
             }
         }
             #ifdef USERAW
             WRITEIMG(writeraw, "raw");
             #endif // USERAW
-            WRITEIMG(writefits, "fit");
+            WRITEIMG(writefits, "fits");
             #ifdef USEPNG
             WRITEIMG(writepng, "png");
             #endif // USEPNG
@@ -380,7 +424,9 @@ int writefits(char *filename, int width, int height, void *data){
         WRITEKEY(fp, TSTRING, "INSTRUME", "direct imaging", "Instrument");
     snprintf(buf, 80, "%.g x %.g", pixX, pixY);
     // PXSIZE / pixel size
-    WRITEKEY(fp, TSTRING, "PXSIZE", buf, "Pixel size in mkm");
+    WRITEKEY(fp, TSTRING, "PXSIZE", buf, "Approx. pixel size (um)");
+    WRITEKEY(fp, TDOUBLE, "XPIXSZ", &pixX, "Pixel Size X (um)");
+    WRITEKEY(fp, TDOUBLE, "YPIXSZ", &pixY, "Pixel Size Y (um)");
     // CRVAL1, CRVAL2 / Offset in X, Y
     if(G->X0) WRITEKEY(fp, TINT, "X0", &G->X0, "Subframe left border");
     if(G->Y0) WRITEKEY(fp, TINT, "Y0", &G->Y0, "Subframe upper border");
@@ -401,20 +447,23 @@ int writefits(char *filename, int width, int height, void *data){
     WRITEKEY(fp, TDOUBLE, "STATAVR", &avr, "Average data value");
     WRITEKEY(fp, TDOUBLE, "STATSTD", &std, "Std. of data value");
     WRITEKEY(fp, TDOUBLE, "TEMP0", &G->temperature, "Camera temperature at exp. start (degr C)");
-    WRITEKEY(fp, TDOUBLE, "TEMP1", &t_int, "Camera temperature at exp. end (degr C)");
-    tmp = (G->temperature + t_int) / 2. + 273.15;
+    if(t_int < 100.){
+        WRITEKEY(fp, TDOUBLE, "TEMP1", &t_int, "Camera temperature at exp. end (degr C)");
+        tmp = (G->temperature + t_int) / 2. + 273.15;
+    }else tmp = G->temperature + 273.15;
     // CAMTEMP / Camera temperature (K)
-    WRITEKEY(fp, TDOUBLE, "CAMTEMP", &tmp, "Camera temperature (K)");
+    WRITEKEY(fp, TDOUBLE, "CAMTEMP", &tmp, "Average camera temperature (K)");
     tmp = (double)G->exptime;
     // EXPTIME / actual exposition time (sec)
-    WRITEKEY(fp, TDOUBLE, "EXPTIME", &tmp, "actual exposition time (sec)");
+    WRITEKEY(fp, TDOUBLE, "EXPTIME", &tmp, "Actual exposition time (sec)");
     // DATE / Creation date (YYYY-MM-DDThh:mm:ss, UTC)
     strftime(buf, 80, "%Y-%m-%dT%H:%M:%S", gmtime(&savetime));
     WRITEKEY(fp, TSTRING, "DATE", buf, "Creation date (YYYY-MM-DDThh:mm:ss, UTC)");
-    startTime = (long)expStartsAt;
-    tm_starttime = localtime(&expStartsAt);
+    startTime = (long)expStartsAt.tv_sec;
+    tm_starttime = localtime(&expStartsAt.tv_sec);
     strftime(buf, 80, "exposition starts at %d/%m/%Y, %H:%M:%S (local)", tm_starttime);
-    WRITEKEY(fp, TLONG, "UNIXTIME", &startTime, buf);
+    tmp = startTime + (double)expStartsAt.tv_usec/1e6;
+    WRITEKEY(fp, TDOUBLE, "UNIXTIME", &tmp, buf);
     strftime(buf, 80, "%Y/%m/%d", tm_starttime);
     // DATE-OBS / DATE (YYYY/MM/DD) OF OBS.
     WRITEKEY(fp, TSTRING, "DATE-OBS", buf, "DATE OF OBS. (YYYY/MM/DD, local)");
@@ -442,6 +491,9 @@ int writefits(char *filename, int width, int height, void *data){
     if(G->author){
         WRITEKEY(fp, TSTRING, "AUTHOR", G->author, "Author of the program");
     }
+    #ifdef USE_BTA
+    write_bta_data(fp);
+    #endif
     TRYFITS(fits_write_img, fp, TUSHORT, 1, width * height, data);
     TRYFITS(fits_close_file, fp);
     return 0;
