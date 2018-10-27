@@ -35,7 +35,7 @@ if(DEFINED CMAKE_INSTALL_PREFIX AND CMAKE_INSTALL_PREFIX MATCHES "/usr/local")
     set(CMAKE_INSTALL_PREFIX "/usr")
 endif()
 
-if(NOT DEFINED NOBTA)
+if(DEFINED USE_BTA AND USE_BTA STREQUAL "yes")
     add_definitions(-DUSE_BTA)
 endif()
 if(DEFINED TELALT)
@@ -52,22 +52,27 @@ if(DEFINED TELFOCUS)
 endif()
 
 find_package(PkgConfig REQUIRED)
-set(MODULES cfitsio>=3.0)
+#set(MODULES cfitsio>=3.0)
+
+# find CFITSIO
+SET(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR})
+FIND_PACKAGE(CFITSIO REQUIRED)
+
 # additional modules on condition
-if(DEFINED USEPNG)
+if(DEFINED USE_PNG AND USE_PNG STREQUAL "yes")
     set(MODULES ${MODULES} libpng>=1.2)
     add_definitions(-DUSEPNG)
 endif()
 pkg_check_modules(${PROJ} REQUIRED ${MODULES})
-if(DEFINED USERAW)
+if(DEFINED USE_RAW AND USE_RAW STREQUAL "yes")
     add_definitions(-DUSERAW)
 endif()
 
 # change wrong behaviour with install prefix
-if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT AND CMAKE_INSTALL_PREFIX MATCHES "/usr/local")
-    message("Change default install path to /usr")
-    set(CMAKE_INSTALL_PREFIX "/usr")
-endif()
+#if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT AND CMAKE_INSTALL_PREFIX MATCHES "/usr/local")
+#    message("Change default install path to /usr")
+#    set(CMAKE_INSTALL_PREFIX "/usr")
+#endif()
 message("Install dir prefix: ${CMAKE_INSTALL_PREFIX}")
 
 # directory should contain dir locale/ru for gettext translations
